@@ -1,0 +1,16 @@
+@import "../../../shared/styles/responsive-table";
+
+.wrapper {
+  margin-top: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+mat-card {
+  margin: 5px;
+}
+
+.scroll-container {
+  max-height: 350px;
+  overflow: auto;
+}
