@@ -1,5 +1,15 @@
 package com.isi.map.dto;
 
-public class ActivityDetailsDto {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ActivityDetailsDto {
+	String id;
+	Double xMin;
 }
