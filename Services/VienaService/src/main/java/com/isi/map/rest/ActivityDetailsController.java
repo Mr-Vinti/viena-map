@@ -10,16 +10,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isi.map.beans.StringResponse;
 import com.isi.map.dto.ActivityDetailsDto;
+import com.isi.map.service.ActivityDetailsService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 
 @RestController
+@AllArgsConstructor
 @Api(tags = "Test Controller")
 @RequestMapping(value = "/activityDetails")
 public class ActivityDetailsController {
+	ActivityDetailsService activitydetailsService;
+	
 	@ApiOperation("Test Get Method")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Successful"),
 			@ApiResponse(code = 400, message = "Malformed request"),
