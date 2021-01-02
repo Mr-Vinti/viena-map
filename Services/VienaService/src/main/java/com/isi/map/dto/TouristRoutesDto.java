@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityDetailsDto {
+public class TouristRoutesDto {
 	String id;
-	Double xMin;
-	Double xMax;
-	Double yMin;
-	Double yMax;
+	String name;
+	Integer length;
+	Integer objectives_number;
+	ActivityDetailsDto activityDetails;
 }

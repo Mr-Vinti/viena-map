@@ -9,10 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityDetailsDto {
+public class TouristAttractionsDto {
 	String id;
-	Double xMin;
-	Double xMax;
-	Double yMin;
-	Double yMax;
+	String name;
+	ActivityDetailsDto activityDetails;
 }

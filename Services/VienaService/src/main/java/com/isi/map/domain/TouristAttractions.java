@@ -3,6 +3,8 @@ package com.isi.map.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -17,22 +19,19 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(schema = "VienaDatabase", name = "DETALII_ACTIVITATE")
-public class ActivityDetails {
+@Table(schema = "VienaDatabase", name = "OBIECTIVE_TURISTICE")
+public class TouristAttractions {
 	
 	@Id
 	@Column(name = "ID")
 	private String id;
 	
-	@Column(name = "X_min")
-	private Double xMin;
+	@Column(name = "Nume")
+	private String name;
 	
-	@Column(name = "X_max")
-	private Double xMax;
+	@OneToOne
+	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
+	private ActivityDetails activityDetails;
 	
-	@Column(name = "Y_min")
-	private Double yMin;
 	
-	@Column(name = "Y_max")
-	private Double yMax;
 }
