@@ -21,12 +21,12 @@ import lombok.ToString;
 @ToString
 @QueryEntity
 @Entity
-@Table(schema = "VienaDatabase", name = "DETALII_ACTIVITATE")
+@Table(schema = "dbo", name = "DETALII_ACTIVITATE")
 public class ActivityDetails {
 	
 	@Id
 	@Column(name = "ID")
-	private String id;
+	private Integer id;
 	
 	@Column(name = "X_min")
 	private Double xMin;

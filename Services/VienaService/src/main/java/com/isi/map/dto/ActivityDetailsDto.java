@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ActivityDetailsDto {
-	String id;
+	Integer id;
 	Double xMin;
 	Double xMax;
 	Double yMin;
