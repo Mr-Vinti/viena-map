@@ -1,0 +1,21 @@
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer #drawer class="example-sidenav" mode="side">
+    <div fxLayout="column" fxLayoutGap="1%" class="form">
+      <mat-form-field fxFlex="100%">
+        <mat-label>Search</mat-label>
+        <input matInput />
+      </mat-form-field>
+      <mat-checkbox fxFlex="100%">Parks</mat-checkbox>
+      <mat-checkbox fxFlex="100%">Hiking Trails</mat-checkbox>
+      <mat-checkbox fxFlex="100%">Tourist Atractions</mat-checkbox>
+      <mat-checkbox fxFlex="100%">Tourist Routes</mat-checkbox>
+    </div>
+  </mat-drawer>
+
+  <div class="example-sidenav-content">
+    <button mat-raised-button (click)="drawer.toggle()">
+      <mat-icon>filter_alt</mat-icon>
+    </button>
+  </div>
+
+</mat-drawer-container>

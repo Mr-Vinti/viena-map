@@ -1,16 +1,11 @@
-@import "../../../shared/styles/responsive-table";
-
-.wrapper {
-  margin-top: 20px;
-  margin-left: 5%;
-  margin-right: 5%;
+.example-sidenav-content {
+  height: 95vh;
 }
 
-mat-card {
-  margin: 5px;
+.example-sidenav {
+  padding: 20px;
 }
 
-.scroll-container {
-  max-height: 350px;
-  overflow: auto;
+.form {
+  padding-left: 15px;
 }

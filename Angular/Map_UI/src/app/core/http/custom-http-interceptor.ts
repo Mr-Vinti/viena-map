@@ -8,7 +8,6 @@ import {
 } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { mergeMap, tap } from 'rxjs/operators';
-import { Location } from '@angular/common';
 import { MsalService, BroadcastService } from '@azure/msal-angular';
 import { AuthResponse, ServerHashParamKeys } from 'msal';
 import 'rxjs/add/observable/fromPromise';

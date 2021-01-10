@@ -6,5 +6,5 @@
 export const environment = {
   production: false,
   baseHref: '/viena/',
-  uploadUri: 'http://localhost:8080/viena-service/'
+  apiUri: 'http://localhost:8080/viena-service/'
 };

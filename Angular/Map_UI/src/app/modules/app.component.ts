@@ -21,7 +21,6 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
