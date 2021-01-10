@@ -6,7 +6,7 @@ import { ComponentOneComponent } from './component-one/component-one.component';
 // Routes
 const moduleRoutes: Routes = [
   {
-    path: 'predict',
+    path: 'map',
     component: ComponentOneComponent,
   },
 ];
