@@ -5,9 +5,9 @@
   "angular-cli": {},
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --baseHref=/covid-inference/",
-    "build": "ng build --prod --aot --baseHref=/covid-inference/",
-    "build-dev": "ng build --configuration=dev --source-map --aot --baseHref=/covid-inference/",
+    "start": "ng serve --baseHref=/viena/",
+    "build": "ng build --prod --aot --baseHref=/viena/",
+    "build-dev": "ng build --configuration=dev --source-map --aot --baseHref=/viena/",
     "test": "ng test --browsers ChromeHeadless --watch=false",
     "test-chromium": "ng test --browsers ChromiumHeadless --watch=false",
     "test-local": "ng test --browsers Chromium --watch=true",

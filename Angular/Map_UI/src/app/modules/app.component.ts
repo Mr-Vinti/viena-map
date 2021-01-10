@@ -29,7 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'Covid Inference';
+  title = 'Viena Map';
   isIframe: boolean;
   isLoading: Subject<boolean> = this.loadingService.isLoading;
 
