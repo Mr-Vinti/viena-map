@@ -22,6 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@QueryEntity
 @Entity
 @Table(schema = "dbo", name = "PARCURI")
 public class Parks {

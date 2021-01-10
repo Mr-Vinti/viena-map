@@ -22,10 +22,10 @@ public class TouristAttractionsService {
 	TouristAttractionsRepository touristAttractionsRepository;
 
 	public List<TouristAttractionsDto> getTouristAttractions(Predicate predicate) {
-		log.info("Retrieving hiking trails for predicate: {}", predicate.toString());
-		List<TouristAttractions> activityDetails = IterableUtils.toList(touristAttractionsRepository.findAll(predicate));
+		log.info("Retrieving tourist attractions for predicate: {}", predicate.toString());
+		List<TouristAttractions> touristAttractions = IterableUtils.toList(touristAttractionsRepository.findAll(predicate));
 		
 		// TODO Auto-generated method stub
-		return activityDetails.stream().map(TouristAttractions::toDto).collect(Collectors.toList());
+		return touristAttractions.stream().map(TouristAttractions::toDto).collect(Collectors.toList());
 	}
 }

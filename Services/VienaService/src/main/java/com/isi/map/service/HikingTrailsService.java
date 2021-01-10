@@ -23,9 +23,9 @@ public class HikingTrailsService {
 
 	public List<HikingTrailsDto> getHikingTrails(Predicate predicate) {
 		log.info("Retrieving hiking trails for predicate: {}", predicate.toString());
-		List<HikingTrails> activityDetails = IterableUtils.toList(hikingTrailsRepository.findAll(predicate));
+		List<HikingTrails> hikingTrails = IterableUtils.toList(hikingTrailsRepository.findAll(predicate));
 		
 		// TODO Auto-generated method stub
-		return activityDetails.stream().map(HikingTrails::toDto).collect(Collectors.toList());
+		return hikingTrails.stream().map(HikingTrails::toDto).collect(Collectors.toList());
 	}
 }

@@ -23,9 +23,9 @@ public class ParksService {
 
 	public List<ParksDto> getParks(Predicate predicate) {
 		log.info("Retrieving parks for predicate: {}", predicate.toString());
-		List<Parks> activityDetails = IterableUtils.toList(parksRepository.findAll(predicate));
+		List<Parks> parks = IterableUtils.toList(parksRepository.findAll(predicate));
 		
 		// TODO Auto-generated method stub
-		return activityDetails.stream().map(Parks::toDto).collect(Collectors.toList());
+		return parks.stream().map(Parks::toDto).collect(Collectors.toList());
 	}
 }
