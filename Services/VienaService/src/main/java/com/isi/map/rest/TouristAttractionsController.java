@@ -21,12 +21,12 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@Api(tags = "Test Controller")
+@Api(tags = "Tourist Attractions Controller")
 @RequestMapping(value = "/activityDetails")
 public class TouristAttractionsController {
 	TouristAttractionsService touristAttractionsService;
 	
-	@ApiOperation("Test Get Method")
+	@ApiOperation("Get Tourist Attractions Method")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Successful"),
 			@ApiResponse(code = 400, message = "Malformed request"),
 			@ApiResponse(code = 500, message = "Internal error") })
