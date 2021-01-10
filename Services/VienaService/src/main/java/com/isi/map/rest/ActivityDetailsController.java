@@ -21,18 +21,18 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@Api(tags = "Test Controller")
+@Api(tags = "Activity Details Controller")
 @RequestMapping(value = "/activityDetails")
 public class ActivityDetailsController {
 	ActivityDetailsService activityDetailsService;
-	
-	@ApiOperation("Test Get Method")
+
+	@ApiOperation("Get Activity Details Method")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Successful"),
 			@ApiResponse(code = 400, message = "Malformed request"),
 			@ApiResponse(code = 500, message = "Internal error") })
 	@GetMapping
 	public ResponseEntity<List<ActivityDetailsDto>> getActivityDetails(@QuerydslPredicate(root = ActivityDetails.class) Predicate predicate) {
-		
+
 		List<ActivityDetailsDto> activityDetailsDtos = activityDetailsService.getActivityDetails(predicate);
 		return ResponseEntity.ok(activityDetailsDtos);
 	}
