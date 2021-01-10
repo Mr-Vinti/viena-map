@@ -13,18 +13,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.isi.map.dto.ActivityDetailsDto;
+import com.isi.map.dto.TouristAttractionsDto;
+import com.querydsl.core.annotations.QueryEntity;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@QueryEntity
 @Entity
-@Table(schema = "VienaDatabase", name = "OBIECTIVE_TURISTICE")
+@Table(schema = "dbo", name = "OBIECTIVE_TURISTICE")
 public class TouristAttractions {
 	
 	@Id
 	@Column(name = "ID")
-	private String id;
+	private Integer id;
 	
 	@Column(name = "Nume")
 	private String name;
@@ -33,5 +38,11 @@ public class TouristAttractions {
 	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
 	private ActivityDetails activityDetails;
 	
-	
+	public static TouristAttractionsDto toDto(TouristAttractions entity) {
+		return TouristAttractionsDto.builder()
+				.id(entity.getId())
+				.name(entity.getName())
+				.activityDetails(ActivityDetails.toDto(entity.getActivityDetails()))
+				.build();
+	}
 }
