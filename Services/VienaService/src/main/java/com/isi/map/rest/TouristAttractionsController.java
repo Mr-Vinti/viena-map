@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
 @Api(tags = "Tourist Attractions Controller")
-@RequestMapping(value = "/activityDetails")
+@RequestMapping(value = "/touristAttractions")
 public class TouristAttractionsController {
 	TouristAttractionsService touristAttractionsService;
 	
