@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 
-//import { MatAccordion } from '@angular/material/expansion';
+// import { MatAccordion } from '@angular/material/expansion';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -37,11 +37,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   exports: [
     CdkTableModule,
     CdkTreeModule,
-    //MatAccordion,
+    // MatAccordion,
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -76,6 +77,8 @@ import { MatTreeModule } from '@angular/material/tree';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class MaterialModule { }

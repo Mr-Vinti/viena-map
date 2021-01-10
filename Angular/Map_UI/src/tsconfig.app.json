@@ -4,7 +4,9 @@
     "outDir": "../out-tsc/app",
     "target": "es5",
     "baseUrl": "./",
-    "types": []
+    "types": [
+      "arcgis-js-api"
+    ]
   },
   "files": [
     "main.ts",

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HikingTrail } from '../../shared/models/hiking-trail.model';
@@ -8,26 +8,52 @@ import { TouristRoute } from '../../shared/models/tourist-route.model';
 import { TouristAttraction } from '../../shared/models/tourist-attraction.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpService {
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {
+  getHikingTrails(name: string): Observable<HikingTrail[]> {
+    let params = new HttpParams();
+    if (name) {
+      params = params.set('name:like', name);
     }
 
-    getHikingTrails(): Observable<HikingTrail[]> {
-        return this.http.get<HikingTrail[]>(environment.apiUri + 'hikingTrails');
-    }
+    return this.http.get<HikingTrail[]>(environment.apiUri + 'hikingTrails', {
+      params,
+    });
+  }
 
-    getParks(): Observable<Park[]> {
-        return this.http.get<Park[]>(environment.apiUri + 'parks');
+  getParks(name: string): Observable<Park[]> {
+    let params = new HttpParams();
+    if (name) {
+      params = params.set('name:like', name);
     }
+    return this.http.get<Park[]>(environment.apiUri + 'parks', {
+      params,
+    });
+  }
 
-    getTouristAttractions(): Observable<TouristAttraction[]> {
-        return this.http.get<TouristAttraction[]>(environment.apiUri + 'touristAttractions');
+  getTouristAttractions(name: string): Observable<TouristAttraction[]> {
+    let params = new HttpParams();
+    if (name) {
+      params = params.set('name:like', name);
     }
+    return this.http.get<TouristAttraction[]>(
+      environment.apiUri + 'touristAttractions',
+      {
+        params,
+      }
+    );
+  }
 
-    getTouristRoutes(): Observable<TouristRoute[]> {
-        return this.http.get<TouristRoute[]>(environment.apiUri + 'touristRoutes');
+  getTouristRoutes(name: string): Observable<TouristRoute[]> {
+    let params = new HttpParams();
+    if (name) {
+      params = params.set('name:like', name);
     }
+    return this.http.get<TouristRoute[]>(environment.apiUri + 'touristRoutes', {
+      params,
+    });
+  }
 }

@@ -1,21 +1,26 @@
 <mat-drawer-container class="example-container" autosize>
   <mat-drawer #drawer class="example-sidenav" mode="side">
-    <div fxLayout="column" fxLayoutGap="1%" class="form">
+    <form fxLayout="column" fxLayoutGap="1%" class="form" [formGroup]="searchForm">
       <mat-form-field fxFlex="100%">
         <mat-label>Search</mat-label>
-        <input matInput />
+        <input matInput formControlName="search" />
       </mat-form-field>
-      <mat-checkbox fxFlex="100%">Parks</mat-checkbox>
-      <mat-checkbox fxFlex="100%">Hiking Trails</mat-checkbox>
-      <mat-checkbox fxFlex="100%">Tourist Atractions</mat-checkbox>
-      <mat-checkbox fxFlex="100%">Tourist Routes</mat-checkbox>
-    </div>
+      <mat-checkbox fxFlex="100%" formControlName="hasParks">Parks</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasHikingTrails">Hiking Trails</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasTouristAttractions">Tourist Atractions</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasTouristRoutes">Tourist Routes</mat-checkbox>
+      <button mat-raised-button color="primary" fxFlex="100%" (click)="search()">Search</button>
+    </form>
   </mat-drawer>
 
   <div class="example-sidenav-content">
-    <button mat-raised-button (click)="drawer.toggle()">
+    <button class="filter-button" mat-raised-button (click)="drawer.toggle()">
       <mat-icon>filter_alt</mat-icon>
     </button>
+
+    <div #mapView></div>
+
+
   </div>
 
 </mat-drawer-container>
