@@ -7,6 +7,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.isi.map.dto.ActivityDetailsDto;
+import com.isi.map.dto.HikingTrailsDto;
+import com.querydsl.core.annotations.QueryEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +22,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@QueryEntity
 @Entity
-@Table(schema = "VienaDatabase", name = "DRUMETII")
+@Table(schema = "dbo", name = "DRUMETII")
 public class HikingTrails {
 	
 	@Id
 	@Column(name = "ID")
-	private String id;
+	private Integer id;
 	
 	@Column(name = "Nume")
 	private String name;
@@ -42,5 +47,14 @@ public class HikingTrails {
 	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
 	private ActivityDetails activityDetails;
 	
-	
+	public static HikingTrailsDto toDto(HikingTrails entity) {
+		return HikingTrailsDto.builder()
+				.id(entity.getId())
+				.name(entity.getName())
+				.length(entity.getLength())
+				.duration(entity.getDuration())
+				.dificulty(entity.getDificulty())
+				.activityDetails(ActivityDetails.toDto(entity.getActivityDetails()))
+				.build();
+	}
 }

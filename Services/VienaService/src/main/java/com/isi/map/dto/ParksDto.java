@@ -4,16 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ParksDto {
-	String id;
+	Integer id;
 	String name;
 	Integer surface;
 	Boolean playgrounds;
-	Boolean pet_spaces;
+	Boolean petspaces;
 	ActivityDetailsDto activityDetails;
 }

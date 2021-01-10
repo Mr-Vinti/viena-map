@@ -7,6 +7,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.isi.map.dto.ActivityDetailsDto;
+import com.isi.map.dto.ParksDto;
+import com.querydsl.core.annotations.QueryEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,12 +23,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(schema = "VienaDatabase", name = "PARCURI")
+@Table(schema = "dbo", name = "PARCURI")
 public class Parks {
 	
 	@Id
 	@Column(name = "ID")
-	private String id;
+	private Integer id;
 	
 	@Column(name = "Nume")
 	private String name;
@@ -36,11 +40,22 @@ public class Parks {
 	private Boolean playgrounds;
 	
 	@Column(name = "Spatii_animale")
-	private Boolean pet_spaces;
+	private Boolean petspaces;
 	
 	@OneToOne
 	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
 	private ActivityDetails activityDetails;
 	
+	
+	public static ParksDto toDto(Parks entity) {
+		return ParksDto.builder()
+				.id(entity.getId())
+				.name(entity.getName())
+				.surface(entity.getSurface())
+				.playgrounds(entity.getPlaygrounds())
+				.petspaces(entity.getPetspaces())
+				.activityDetails(ActivityDetails.toDto(entity.getActivityDetails()))
+				.build();
+	}
 	
 }
