@@ -6,6 +6,7 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isi.map.domain.TouristRoutes;
@@ -31,9 +32,10 @@ public class TouristRoutesController {
 			@ApiResponse(code = 400, message = "Malformed request"),
 			@ApiResponse(code = 500, message = "Internal error") })
 	@GetMapping
-	public ResponseEntity<List<TouristRoutesDto>> getTouristRoutes(@QuerydslPredicate(root = TouristRoutes.class) Predicate predicate) {
+	public ResponseEntity<List<TouristRoutesDto>> getTouristRoutes(@QuerydslPredicate(root = TouristRoutes.class) Predicate predicate,
+			@RequestParam(name = "name:like", required = false) String name) {
 		
-		List<TouristRoutesDto> touristRoutesDtos = touristRoutesService.getTouristRoutes(predicate);
+		List<TouristRoutesDto> touristRoutesDtos = touristRoutesService.getTouristRoutes(predicate,name);
 		return ResponseEntity.ok(touristRoutesDtos);
 	}
 }
