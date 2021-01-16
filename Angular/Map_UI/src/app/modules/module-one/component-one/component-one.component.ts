@@ -8,6 +8,8 @@ import { HttpService } from '../../../core/http/http.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { loadModules } from 'esri-loader';
 import { Extent } from 'esri/geometry';
+import { identifierModuleUrl } from '@angular/compiler';
+import { PictureMarkerSymbol, WebStyleSymbol } from 'esri/symbols';
 
 @Component({
   selector: 'app-component-one',
@@ -23,7 +25,13 @@ export class ComponentOneComponent implements OnInit {
   parks: Park[];
   touristAttractions: TouristAttraction[];
   touristRoutes: TouristRoute[];
+  hikingTrailFields: any;
+  hikingTrailPopupHtml =
+    '<span>Length: {length} kilometers</span><br>\
+  <span>Duration: {duration} minutes</span><br>\
+  <span>Difficulty: {dificulty}</span>';
 
+  map: any;
   /*
   const location = new Point({
                   latitude: dmsDD(latitude, latitudeDirection),
@@ -62,6 +70,7 @@ export class ComponentOneComponent implements OnInit {
         };
         // create map by default properties
         const map = new Map(mapProperties);
+        this.map = map;
         // set default map view properties
         // container - element in html-template for locate map
         // zoom - default zoom parameter, value from 1 to 18
@@ -87,6 +96,28 @@ export class ComponentOneComponent implements OnInit {
         // const oilSandsLayer = new MapImageLayer(oilSandLayerProperties);
         // // Adding a layer into map
         // map.add(oilSandsLayer);
+        this.hikingTrailFields = [
+          {
+            name: 'OBJECTID',
+            type: 'oid',
+          },
+          {
+            name: 'name',
+            type: 'string',
+          },
+          {
+            name: 'length',
+            type: 'integer',
+          },
+          {
+            name: 'duration',
+            type: 'integer',
+          },
+          {
+            name: 'dificulty',
+            type: 'integer',
+          },
+        ];
       }
     );
   }
@@ -108,6 +139,68 @@ export class ComponentOneComponent implements OnInit {
         .subscribe((results) => {
           this.hikingTrails = results;
           console.log(this.hikingTrails);
+          const hikingTrailGraphics = [];
+
+          loadModules([
+            'esri/Map',
+            'esri/layers/FeatureLayer',
+            'esri/geometry/Point',
+            'esri/Graphic',
+            'esri/renderers/SimpleRenderer',
+            'esri/symbols/WebStyleSymbol'
+          ]).then(
+            ([Map, FeatureLayer, Point, Graphic, SimpleRenderer, WebStyleSymbol]: [
+              __esri.MapConstructor,
+              __esri.FeatureLayerConstructor,
+              __esri.PointConstructor,
+              __esri.GraphicConstructor,
+              __esri.SimpleRendererConstructor,
+              __esri.WebStyleSymbolConstructor
+            ]) => {
+              if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
+                (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
+              }
+
+              this.hikingTrails.forEach((hikingTrail) => {
+                hikingTrailGraphics.push(
+                  new Graphic({
+                    geometry: new Point({
+                      latitude: (hikingTrail.activityDetails.yMin + hikingTrail.activityDetails.yMax) / 2,
+                      longitude: (hikingTrail.activityDetails.xMin + hikingTrail.activityDetails.xMax) / 2,
+                    }),
+                    attributes: {
+                      OBJECTID: hikingTrail.id,
+                      name: hikingTrail.name,
+                      length: hikingTrail.length,
+                      duration: hikingTrail.duration,
+                      dificulty: hikingTrail.dificulty,
+                    },
+                  })
+                );
+              });
+
+              const layer = new FeatureLayer({
+                id: 'hikingTrails',
+                source: hikingTrailGraphics,
+                objectIdField: 'OBJECTID',
+                fields: this.hikingTrailFields,
+                popupTemplate: {
+                  title: 'Hiking Trail: {name}',
+                  content: this.hikingTrailPopupHtml,
+                },
+                renderer: new SimpleRenderer({
+                  type: 'simple',
+                  symbol: new WebStyleSymbol({
+                    styleName: 'Esri2DPointSymbolsStyle',
+                    name: 'trail'
+                    // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
+                  })
+                })
+              });
+
+              this.map.add(layer);
+            }
+          );
         });
     }
 
