@@ -147,9 +147,16 @@ export class ComponentOneComponent implements OnInit {
             'esri/geometry/Point',
             'esri/Graphic',
             'esri/renderers/SimpleRenderer',
-            'esri/symbols/WebStyleSymbol'
+            'esri/symbols/WebStyleSymbol',
           ]).then(
-            ([Map, FeatureLayer, Point, Graphic, SimpleRenderer, WebStyleSymbol]: [
+            ([
+              Map,
+              FeatureLayer,
+              Point,
+              Graphic,
+              SimpleRenderer,
+              WebStyleSymbol,
+            ]: [
               __esri.MapConstructor,
               __esri.FeatureLayerConstructor,
               __esri.PointConstructor,
@@ -165,8 +172,14 @@ export class ComponentOneComponent implements OnInit {
                 hikingTrailGraphics.push(
                   new Graphic({
                     geometry: new Point({
-                      latitude: (hikingTrail.activityDetails.yMin + hikingTrail.activityDetails.yMax) / 2,
-                      longitude: (hikingTrail.activityDetails.xMin + hikingTrail.activityDetails.xMax) / 2,
+                      latitude:
+                        (hikingTrail.activityDetails.yMin +
+                          hikingTrail.activityDetails.yMax) /
+                        2,
+                      longitude:
+                        (hikingTrail.activityDetails.xMin +
+                          hikingTrail.activityDetails.xMax) /
+                        2,
                     }),
                     attributes: {
                       OBJECTID: hikingTrail.id,
@@ -192,16 +205,22 @@ export class ComponentOneComponent implements OnInit {
                   type: 'simple',
                   symbol: new WebStyleSymbol({
                     styleName: 'Esri2DPointSymbolsStyle',
-                    name: 'trail'
+                    name: 'trail',
                     // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
-                  })
-                })
+                  }),
+                }),
               });
 
               this.map.add(layer);
             }
           );
         });
+    } else {
+      loadModules(['esri/Map']).then(([Map]: [__esri.MapConstructor]) => {
+        if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
+          (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
+        }
+      });
     }
 
     if (this.searchForm.controls.hasParks.value) {
