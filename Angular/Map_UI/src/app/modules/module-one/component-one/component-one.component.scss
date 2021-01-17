@@ -20,3 +20,7 @@
 .filter-button {
   margin-bottom: 10px;
 }
+
+::ng-deep .esri-view {
+  height: 96% !important;
+}
