@@ -29,7 +29,7 @@
 	</properties>
 
 	<artifactId>viena-service</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>carrental: WAR Module</name>
 
