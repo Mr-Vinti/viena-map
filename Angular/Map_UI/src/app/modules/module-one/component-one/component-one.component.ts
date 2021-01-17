@@ -165,7 +165,10 @@ export class ComponentOneComponent implements OnInit {
               __esri.WebStyleSymbolConstructor
             ]) => {
               if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
-                (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
+                if ((<__esri.Map>this.map).findLayerById('hikingTrails').destroyed === false) {
+                  (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
+                  (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('hikingTrails'));
+                }
               }
 
               this.hikingTrails.forEach((hikingTrail) => {
@@ -217,7 +220,10 @@ export class ComponentOneComponent implements OnInit {
     } else {
       loadModules(['esri/Map']).then(([Map]: [__esri.MapConstructor]) => {
         if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
-          (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
+          if ((<__esri.Map>this.map).findLayerById('hikingTrails').destroyed === false) {
+            (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
+            (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('hikingTrails'));
+          }
         }
       });
     }
