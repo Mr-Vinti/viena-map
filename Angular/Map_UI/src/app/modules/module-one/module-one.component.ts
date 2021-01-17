@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-module-one',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ModuleOneComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+    let that = this;
+    setTimeout(function() { that.router.navigate(['map']); }, 1000);
   }
 
 }
