@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.isi.map.dto.ActivityDetailsDto;
 import com.isi.map.dto.TouristAttractionsDto;
 import com.querydsl.core.annotations.QueryEntity;
 
@@ -34,6 +33,9 @@ public class TouristAttractions {
 	@Column(name = "Nume")
 	private String name;
 	
+	@Column(name = "Url")
+	private String url;
+	
 	@OneToOne
 	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
 	private ActivityDetails activityDetails;
@@ -42,6 +44,7 @@ public class TouristAttractions {
 		return TouristAttractionsDto.builder()
 				.id(entity.getId())
 				.name(entity.getName())
+				.url(entity.getUrl())
 				.activityDetails(ActivityDetails.toDto(entity.getActivityDetails()))
 				.build();
 	}

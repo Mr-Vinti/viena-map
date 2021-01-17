@@ -37,7 +37,8 @@ export class ComponentOneComponent implements OnInit {
   <span>Pet Spaces: {petspaces}</span>';
   touristAttractionsFields: any;
   touristAttractionsPopupHtml =
-  '<span>Objective Image: Marian imaginea mea unde e</span>';
+    '<span>Objective Image:</span><br>\
+    <img src="{url}"></img>';
   touristRoutesFields: any;
   touristRoutesPopupHtml =
     '<span>Length: {length} kilometers</span><br>\
@@ -163,6 +164,10 @@ export class ComponentOneComponent implements OnInit {
             name: 'name',
             type: 'string',
           },
+          {
+            name: 'url',
+            type: 'string',
+          },
         ];
 
         this.touristRoutesFields = [
@@ -204,90 +209,105 @@ export class ComponentOneComponent implements OnInit {
         .subscribe((results) => {
           this.hikingTrails = results;
           console.log(this.hikingTrails);
-          const hikingTrailGraphics = [];
 
-          loadModules([
-            'esri/Map',
-            'esri/layers/FeatureLayer',
-            'esri/geometry/Point',
-            'esri/Graphic',
-            'esri/renderers/SimpleRenderer',
-            'esri/symbols/WebStyleSymbol',
-          ]).then(
-            ([
-              Map,
-              FeatureLayer,
-              Point,
-              Graphic,
-              SimpleRenderer,
-              WebStyleSymbol,
-            ]: [
-              __esri.MapConstructor,
-              __esri.FeatureLayerConstructor,
-              __esri.PointConstructor,
-              __esri.GraphicConstructor,
-              __esri.SimpleRendererConstructor,
-              __esri.WebStyleSymbolConstructor
-            ]) => {
-              if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
-                if ((<__esri.Map>this.map).findLayerById('hikingTrails').destroyed === false) {
-                  (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
-                  (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('hikingTrails'));
+          if (this.hikingTrails.length) {
+            const hikingTrailGraphics = [];
+
+            loadModules([
+              'esri/Map',
+              'esri/layers/FeatureLayer',
+              'esri/geometry/Point',
+              'esri/Graphic',
+              'esri/renderers/SimpleRenderer',
+              'esri/symbols/WebStyleSymbol',
+            ]).then(
+              ([
+                Map,
+                FeatureLayer,
+                Point,
+                Graphic,
+                SimpleRenderer,
+                WebStyleSymbol,
+              ]: [
+                __esri.MapConstructor,
+                __esri.FeatureLayerConstructor,
+                __esri.PointConstructor,
+                __esri.GraphicConstructor,
+                __esri.SimpleRendererConstructor,
+                __esri.WebStyleSymbolConstructor
+              ]) => {
+                if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
+                  if (
+                    (<__esri.Map>this.map).findLayerById('hikingTrails')
+                      .destroyed === false
+                  ) {
+                    (<__esri.Map>this.map)
+                      .findLayerById('hikingTrails')
+                      .destroy();
+                    (<__esri.Map>this.map).remove(
+                      (<__esri.Map>this.map).findLayerById('hikingTrails')
+                    );
+                  }
                 }
-              }
 
-              this.hikingTrails.forEach((hikingTrail) => {
-                hikingTrailGraphics.push(
-                  new Graphic({
-                    geometry: new Point({
-                      latitude:
-                        (hikingTrail.activityDetails.yMin +
-                          hikingTrail.activityDetails.yMax) /
-                        2,
-                      longitude:
-                        (hikingTrail.activityDetails.xMin +
-                          hikingTrail.activityDetails.xMax) /
-                        2,
+                this.hikingTrails.forEach((hikingTrail) => {
+                  hikingTrailGraphics.push(
+                    new Graphic({
+                      geometry: new Point({
+                        latitude:
+                          (hikingTrail.activityDetails.yMin +
+                            hikingTrail.activityDetails.yMax) /
+                          2,
+                        longitude:
+                          (hikingTrail.activityDetails.xMin +
+                            hikingTrail.activityDetails.xMax) /
+                          2,
+                      }),
+                      attributes: {
+                        OBJECTID: hikingTrail.id,
+                        name: hikingTrail.name,
+                        length: hikingTrail.length,
+                        duration: hikingTrail.duration,
+                        dificulty: hikingTrail.dificulty,
+                      },
+                    })
+                  );
+                });
+
+                const layer = new FeatureLayer({
+                  id: 'hikingTrails',
+                  source: hikingTrailGraphics,
+                  objectIdField: 'OBJECTID',
+                  fields: this.hikingTrailFields,
+                  popupTemplate: {
+                    title: 'Hiking Trail: {name}',
+                    content: this.hikingTrailPopupHtml,
+                  },
+                  renderer: new SimpleRenderer({
+                    symbol: new WebStyleSymbol({
+                      styleName: 'Esri2DPointSymbolsStyle',
+                      name: 'trail',
+                      // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                     }),
-                    attributes: {
-                      OBJECTID: hikingTrail.id,
-                      name: hikingTrail.name,
-                      length: hikingTrail.length,
-                      duration: hikingTrail.duration,
-                      dificulty: hikingTrail.dificulty,
-                    },
-                  })
-                );
-              });
-
-              const layer = new FeatureLayer({
-                id: 'hikingTrails',
-                source: hikingTrailGraphics,
-                objectIdField: 'OBJECTID',
-                fields: this.hikingTrailFields,
-                popupTemplate: {
-                  title: 'Hiking Trail: {name}',
-                  content: this.hikingTrailPopupHtml,
-                },
-                renderer: new SimpleRenderer({
-                  symbol: new WebStyleSymbol({
-                    styleName: 'Esri2DPointSymbolsStyle',
-                    name: 'trail',
-                    // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                   }),
-                }),
-              });
+                });
 
-              this.map.add(layer);
-            }
-          );
+                this.map.add(layer);
+              }
+            );
+          }
         });
     } else {
       loadModules(['esri/Map']).then(([Map]: [__esri.MapConstructor]) => {
         if ((<__esri.Map>this.map).findLayerById('hikingTrails')) {
-          if ((<__esri.Map>this.map).findLayerById('hikingTrails').destroyed === false) {
+          if (
+            (<__esri.Map>this.map).findLayerById('hikingTrails').destroyed ===
+            false
+          ) {
             (<__esri.Map>this.map).findLayerById('hikingTrails').destroy();
-            (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('hikingTrails'));
+            (<__esri.Map>this.map).remove(
+              (<__esri.Map>this.map).findLayerById('hikingTrails')
+            );
           }
         }
       });
@@ -299,90 +319,102 @@ export class ComponentOneComponent implements OnInit {
         .subscribe((results) => {
           this.parks = results;
           console.log(this.parks);
-          const parksGraphics = [];
 
-          loadModules([
-            'esri/Map',
-            'esri/layers/FeatureLayer',
-            'esri/geometry/Point',
-            'esri/Graphic',
-            'esri/renderers/SimpleRenderer',
-            'esri/symbols/WebStyleSymbol',
-          ]).then(
-            ([
-              Map,
-              FeatureLayer,
-              Point,
-              Graphic,
-              SimpleRenderer,
-              WebStyleSymbol,
-            ]: [
-              __esri.MapConstructor,
-              __esri.FeatureLayerConstructor,
-              __esri.PointConstructor,
-              __esri.GraphicConstructor,
-              __esri.SimpleRendererConstructor,
-              __esri.WebStyleSymbolConstructor
-            ]) => {
-              if ((<__esri.Map>this.map).findLayerById('parks')) {
-                if ((<__esri.Map>this.map).findLayerById('parks').destroyed === false) {
-                  (<__esri.Map>this.map).findLayerById('parks').destroy();
-                  (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('parks'));
+          if (this.parks.length) {
+            const parksGraphics = [];
+
+            loadModules([
+              'esri/Map',
+              'esri/layers/FeatureLayer',
+              'esri/geometry/Point',
+              'esri/Graphic',
+              'esri/renderers/SimpleRenderer',
+              'esri/symbols/WebStyleSymbol',
+            ]).then(
+              ([
+                Map,
+                FeatureLayer,
+                Point,
+                Graphic,
+                SimpleRenderer,
+                WebStyleSymbol,
+              ]: [
+                __esri.MapConstructor,
+                __esri.FeatureLayerConstructor,
+                __esri.PointConstructor,
+                __esri.GraphicConstructor,
+                __esri.SimpleRendererConstructor,
+                __esri.WebStyleSymbolConstructor
+              ]) => {
+                if ((<__esri.Map>this.map).findLayerById('parks')) {
+                  if (
+                    (<__esri.Map>this.map).findLayerById('parks').destroyed ===
+                    false
+                  ) {
+                    (<__esri.Map>this.map).findLayerById('parks').destroy();
+                    (<__esri.Map>this.map).remove(
+                      (<__esri.Map>this.map).findLayerById('parks')
+                    );
+                  }
                 }
-              }
 
-              this.parks.forEach((park) => {
-                parksGraphics.push(
-                  new Graphic({
-                    geometry: new Point({
-                      latitude:
-                        (park.activityDetails.yMin +
-                          park.activityDetails.yMax) /
-                        2,
-                      longitude:
-                        (park.activityDetails.xMin +
-                          park.activityDetails.xMax) /
-                        2,
+                this.parks.forEach((park) => {
+                  parksGraphics.push(
+                    new Graphic({
+                      geometry: new Point({
+                        latitude:
+                          (park.activityDetails.yMin +
+                            park.activityDetails.yMax) /
+                          2,
+                        longitude:
+                          (park.activityDetails.xMin +
+                            park.activityDetails.xMax) /
+                          2,
+                      }),
+                      attributes: {
+                        OBJECTID: park.id,
+                        name: park.name,
+                        surface: park.surface,
+                        playgrounds: park.playgrounds === true ? 'Yes' : 'No',
+                        petspaces: park.petspaces === true ? 'Yes' : 'No',
+                      },
+                    })
+                  );
+                });
+
+                const layer = new FeatureLayer({
+                  id: 'parks',
+                  source: parksGraphics,
+                  objectIdField: 'OBJECTID',
+                  fields: this.parksFields,
+                  popupTemplate: {
+                    title: 'Park: {name}',
+                    content: this.parksPopupHtml,
+                  },
+                  renderer: new SimpleRenderer({
+                    symbol: new WebStyleSymbol({
+                      styleName: 'Esri2DPointSymbolsStyle',
+                      name: 'park',
+                      // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                     }),
-                    attributes: {
-                      OBJECTID: park.id,
-                      name: park.name,
-                      surface: park.surface,
-                      playgrounds: park.playgrounds === true ? "Yes" : "N",
-                      petspaces: park.petspaces === true ? "Yes" : "No",
-                    },
-                  })
-                );
-              });
-
-              const layer = new FeatureLayer({
-                id: 'parks',
-                source: parksGraphics,
-                objectIdField: 'OBJECTID',
-                fields: this.parksFields,
-                popupTemplate: {
-                  title: 'Park: {name}',
-                  content: this.parksPopupHtml,
-                },
-                renderer: new SimpleRenderer({
-                  symbol: new WebStyleSymbol({
-                    styleName: 'Esri2DPointSymbolsStyle',
-                    name: 'park',
-                    // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                   }),
-                }),
-              });
+                });
 
-              this.map.add(layer);
-            }
-          );
+                this.map.add(layer);
+              }
+            );
+          }
         });
     } else {
       loadModules(['esri/Map']).then(([Map]: [__esri.MapConstructor]) => {
         if ((<__esri.Map>this.map).findLayerById('parks')) {
-          if ((<__esri.Map>this.map).findLayerById('parks').destroyed === false) {
+          if (
+            (<__esri.Map>this.map).findLayerById('parks').destroyed === false
+          ) {
             (<__esri.Map>this.map).findLayerById('parks').destroy();
-            (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('parks'));
+            (<__esri.Map>this.map).remove(
+              (<__esri.Map>this.map).findLayerById('parks')
+            );
           }
         }
       });
@@ -394,87 +426,123 @@ export class ComponentOneComponent implements OnInit {
         .subscribe((results) => {
           this.touristAttractions = results;
           console.log(this.touristAttractions);
-          const touristAttractionsGraphics = [];
 
-          loadModules([
-            'esri/Map',
-            'esri/layers/FeatureLayer',
-            'esri/geometry/Point',
-            'esri/Graphic',
-            'esri/renderers/SimpleRenderer',
-            'esri/symbols/WebStyleSymbol',
-          ]).then(
-            ([
-              Map,
-              FeatureLayer,
-              Point,
-              Graphic,
-              SimpleRenderer,
-              WebStyleSymbol,
-            ]: [
-              __esri.MapConstructor,
-              __esri.FeatureLayerConstructor,
-              __esri.PointConstructor,
-              __esri.GraphicConstructor,
-              __esri.SimpleRendererConstructor,
-              __esri.WebStyleSymbolConstructor
-            ]) => {
-              if ((<__esri.Map>this.map).findLayerById('touristAttractions')) {
-                if ((<__esri.Map>this.map).findLayerById('touristAttractions').destroyed === false) {
-                  (<__esri.Map>this.map).findLayerById('touristAttractions').destroy();
-                  (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('touristAttractions'));
+          if (this.touristAttractions.length) {
+            const touristAttractionsGraphics = [];
+
+            loadModules([
+              'esri/Map',
+              'esri/layers/FeatureLayer',
+              'esri/geometry/Point',
+              'esri/Graphic',
+              'esri/renderers/SimpleRenderer',
+              'esri/symbols/WebStyleSymbol',
+            ]).then(
+              ([
+                Map,
+                FeatureLayer,
+                Point,
+                Graphic,
+                SimpleRenderer,
+                WebStyleSymbol,
+              ]: [
+                __esri.MapConstructor,
+                __esri.FeatureLayerConstructor,
+                __esri.PointConstructor,
+                __esri.GraphicConstructor,
+                __esri.SimpleRendererConstructor,
+                __esri.WebStyleSymbolConstructor
+              ]) => {
+                if (
+                  (<__esri.Map>this.map).findLayerById('touristAttractions')
+                ) {
+                  if (
+                    (<__esri.Map>this.map).findLayerById('touristAttractions')
+                      .destroyed === false
+                  ) {
+                    (<__esri.Map>this.map)
+                      .findLayerById('touristAttractions')
+                      .destroy();
+                    (<__esri.Map>this.map).remove(
+                      (<__esri.Map>this.map).findLayerById('touristAttractions')
+                    );
+                  }
                 }
-              }
 
-              this.touristAttractions.forEach((touristAttraction) => {
-                touristAttractionsGraphics.push(
-                  new Graphic({
-                    geometry: new Point({
-                      latitude:
-                        (touristAttraction.activityDetails.yMin +
-                          touristAttraction.activityDetails.yMax) /
-                        2,
-                      longitude:
-                        (touristAttraction.activityDetails.xMin +
-                          touristAttraction.activityDetails.xMax) /
-                        2,
+                this.touristAttractions.forEach((touristAttraction) => {
+                  touristAttractionsGraphics.push(
+                    new Graphic({
+                      geometry: new Point({
+                        latitude:
+                          (touristAttraction.activityDetails.yMin +
+                            touristAttraction.activityDetails.yMax) /
+                          2,
+                        longitude:
+                          (touristAttraction.activityDetails.xMin +
+                            touristAttraction.activityDetails.xMax) /
+                          2,
+                      }),
+                      attributes: {
+                        OBJECTID: touristAttraction.id,
+                        name: touristAttraction.name,
+                        url:
+                          !touristAttraction.url
+                            ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png'
+                            : touristAttraction.url,
+                      },
+                    })
+                  );
+                });
+
+                const layer = new FeatureLayer({
+                  id: 'touristAttractions',
+                  source: touristAttractionsGraphics,
+                  objectIdField: 'OBJECTID',
+                  fields: this.touristAttractionsFields,
+                  popupTemplate: {
+                    title: 'Touristic Objective: {name}',
+                    content: [
+                      {
+                        type: 'media',
+                        mediaInfos: [
+                          {
+                            title: '',
+                            caption: '',
+                            value: {
+                              sourceURL: '{url}',
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  renderer: new SimpleRenderer({
+                    symbol: new WebStyleSymbol({
+                      styleName: 'Esri2DPointSymbolsStyle',
+                      name: 'landmark',
+                      // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                     }),
-                    attributes: {
-                      OBJECTID: touristAttraction.id,
-                      name: touristAttraction.name,
-                    },
-                  })
-                );
-              });
-
-              const layer = new FeatureLayer({
-                id: 'touristAttractions',
-                source: touristAttractionsGraphics,
-                objectIdField: 'OBJECTID',
-                fields: this.touristAttractionsFields,
-                popupTemplate: {
-                  title: 'Touristic Objective: {name}',
-                  content: this.touristAttractionsPopupHtml,
-                },
-                renderer: new SimpleRenderer({
-                  symbol: new WebStyleSymbol({
-                    styleName: 'Esri2DPointSymbolsStyle',
-                    name: 'landmark',
-                    // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                   }),
-                }),
-              });
+                });
 
-              this.map.add(layer);
-            }
-          );
+                this.map.add(layer);
+              }
+            );
+          }
         });
     } else {
       loadModules(['esri/Map']).then(([Map]: [__esri.MapConstructor]) => {
         if ((<__esri.Map>this.map).findLayerById('touristAttractions')) {
-          if ((<__esri.Map>this.map).findLayerById('touristAttractions').destroyed === false) {
-            (<__esri.Map>this.map).findLayerById('touristAttractions').destroy();
-            (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('touristAttractions'));
+          if (
+            (<__esri.Map>this.map).findLayerById('touristAttractions')
+              .destroyed === false
+          ) {
+            (<__esri.Map>this.map)
+              .findLayerById('touristAttractions')
+              .destroy();
+            (<__esri.Map>this.map).remove(
+              (<__esri.Map>this.map).findLayerById('touristAttractions')
+            );
           }
         }
       });
@@ -486,89 +554,103 @@ export class ComponentOneComponent implements OnInit {
         .subscribe((results) => {
           this.touristRoutes = results;
           console.log(this.touristRoutes);
-          const touristRoutesGraphics = [];
+          if (this.touristRoutes.length) {
+            const touristRoutesGraphics = [];
 
-          loadModules([
-            'esri/Map',
-            'esri/layers/FeatureLayer',
-            'esri/geometry/Point',
-            'esri/Graphic',
-            'esri/renderers/SimpleRenderer',
-            'esri/symbols/WebStyleSymbol',
-          ]).then(
-            ([
-              Map,
-              FeatureLayer,
-              Point,
-              Graphic,
-              SimpleRenderer,
-              WebStyleSymbol,
-            ]: [
-              __esri.MapConstructor,
-              __esri.FeatureLayerConstructor,
-              __esri.PointConstructor,
-              __esri.GraphicConstructor,
-              __esri.SimpleRendererConstructor,
-              __esri.WebStyleSymbolConstructor
-            ]) => {
-              if ((<__esri.Map>this.map).findLayerById('touristRoutes')) {
-                if ((<__esri.Map>this.map).findLayerById('touristRoutes').destroyed === false) {
-                  (<__esri.Map>this.map).findLayerById('touristRoutes').destroy();
-                  (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('touristRoutes'));
+            loadModules([
+              'esri/Map',
+              'esri/layers/FeatureLayer',
+              'esri/geometry/Point',
+              'esri/Graphic',
+              'esri/renderers/SimpleRenderer',
+              'esri/symbols/WebStyleSymbol',
+            ]).then(
+              ([
+                Map,
+                FeatureLayer,
+                Point,
+                Graphic,
+                SimpleRenderer,
+                WebStyleSymbol,
+              ]: [
+                __esri.MapConstructor,
+                __esri.FeatureLayerConstructor,
+                __esri.PointConstructor,
+                __esri.GraphicConstructor,
+                __esri.SimpleRendererConstructor,
+                __esri.WebStyleSymbolConstructor
+              ]) => {
+                if ((<__esri.Map>this.map).findLayerById('touristRoutes')) {
+                  if (
+                    (<__esri.Map>this.map).findLayerById('touristRoutes')
+                      .destroyed === false
+                  ) {
+                    (<__esri.Map>this.map)
+                      .findLayerById('touristRoutes')
+                      .destroy();
+                    (<__esri.Map>this.map).remove(
+                      (<__esri.Map>this.map).findLayerById('touristRoutes')
+                    );
+                  }
                 }
-              }
 
-              this.touristRoutes.forEach((touristRoute) => {
-                touristRoutesGraphics.push(
-                  new Graphic({
-                    geometry: new Point({
-                      latitude:
-                        (touristRoute.activityDetails.yMin +
-                          touristRoute.activityDetails.yMax) /
-                        2,
-                      longitude:
-                        (touristRoute.activityDetails.xMin +
-                          touristRoute.activityDetails.xMax) /
-                        2,
+                this.touristRoutes.forEach((touristRoute) => {
+                  touristRoutesGraphics.push(
+                    new Graphic({
+                      geometry: new Point({
+                        latitude:
+                          (touristRoute.activityDetails.yMin +
+                            touristRoute.activityDetails.yMax) /
+                          2,
+                        longitude:
+                          (touristRoute.activityDetails.xMin +
+                            touristRoute.activityDetails.xMax) /
+                          2,
+                      }),
+                      attributes: {
+                        OBJECTID: touristRoute.id,
+                        name: touristRoute.name,
+                        length: touristRoute.length,
+                        objectivesNumber: touristRoute.objectivesNumber,
+                      },
+                    })
+                  );
+                });
+
+                const layer = new FeatureLayer({
+                  id: 'touristRoutes',
+                  source: touristRoutesGraphics,
+                  objectIdField: 'OBJECTID',
+                  fields: this.touristRoutesFields,
+                  popupTemplate: {
+                    title: 'Touristic Route : {name}',
+                    content: this.touristRoutesPopupHtml,
+                  },
+                  renderer: new SimpleRenderer({
+                    symbol: new WebStyleSymbol({
+                      styleName: 'Esri2DPointSymbolsStyle',
+                      name: 'flag',
+                      // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                     }),
-                    attributes: {
-                      OBJECTID: touristRoute.id,
-                      name: touristRoute.name,
-                      length: touristRoute.length,
-                      objectivesNumber: touristRoute.objectivesNumber,
-                    },
-                  })
-                );
-              });
-
-              const layer = new FeatureLayer({
-                id: 'touristRoutes',
-                source: touristRoutesGraphics,
-                objectIdField: 'OBJECTID',
-                fields: this.touristRoutesFields,
-                popupTemplate: {
-                  title: 'Touristic Route : {name}',
-                  content: this.touristRoutesPopupHtml,
-                },
-                renderer: new SimpleRenderer({
-                  symbol: new WebStyleSymbol({
-                    styleName: 'Esri2DPointSymbolsStyle',
-                    name: 'flag',
-                    // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                   }),
-                }),
-              });
+                });
 
-              this.map.add(layer);
-            }
-          );
+                this.map.add(layer);
+              }
+            );
+          }
         });
     } else {
       loadModules(['esri/Map']).then(([Map]: [__esri.MapConstructor]) => {
         if ((<__esri.Map>this.map).findLayerById('touristRoutes')) {
-          if ((<__esri.Map>this.map).findLayerById('touristRoutes').destroyed === false) {
+          if (
+            (<__esri.Map>this.map).findLayerById('touristRoutes').destroyed ===
+            false
+          ) {
             (<__esri.Map>this.map).findLayerById('touristRoutes').destroy();
-            (<__esri.Map>this.map).remove((<__esri.Map>this.map).findLayerById('touristRoutes'));
+            (<__esri.Map>this.map).remove(
+              (<__esri.Map>this.map).findLayerById('touristRoutes')
+            );
           }
         }
       });

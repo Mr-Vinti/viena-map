@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.isi.map.dto.ActivityDetailsDto;
 import com.isi.map.dto.ParksDto;
 import com.querydsl.core.annotations.QueryEntity;
 
@@ -38,10 +37,10 @@ public class Parks {
 	private Integer surface;
 	
 	@Column(name = "Locuri_joaca")
-	private Boolean playgrounds;
+	private String playgrounds;
 	
 	@Column(name = "Spatii_animale")
-	private Boolean petspaces;
+	private String petspaces;
 	
 	@OneToOne
 	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
@@ -53,8 +52,8 @@ public class Parks {
 				.id(entity.getId())
 				.name(entity.getName())
 				.surface(entity.getSurface())
-				.playgrounds(entity.getPlaygrounds())
-				.petspaces(entity.getPetspaces())
+				.playgrounds(entity.getPlaygrounds().equals("Y") ? true : false)
+				.petspaces(entity.getPetspaces().equals("Y") ? true : false)
 				.activityDetails(ActivityDetails.toDto(entity.getActivityDetails()))
 				.build();
 	}

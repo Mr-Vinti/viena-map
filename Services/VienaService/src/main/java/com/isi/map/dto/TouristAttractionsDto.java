@@ -14,5 +14,6 @@ import lombok.Builder;
 public class TouristAttractionsDto {
 	Integer id;
 	String name;
+	String url;
 	ActivityDetailsDto activityDetails;
 }

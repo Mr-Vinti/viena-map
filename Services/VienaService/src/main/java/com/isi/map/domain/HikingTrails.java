@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.isi.map.dto.ActivityDetailsDto;
 import com.isi.map.dto.HikingTrailsDto;
 import com.querydsl.core.annotations.QueryEntity;
 
