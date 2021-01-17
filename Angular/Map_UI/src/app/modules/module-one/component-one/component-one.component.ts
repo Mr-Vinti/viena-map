@@ -202,7 +202,6 @@ export class ComponentOneComponent implements OnInit {
                   content: this.hikingTrailPopupHtml,
                 },
                 renderer: new SimpleRenderer({
-                  type: 'simple',
                   symbol: new WebStyleSymbol({
                     styleName: 'Esri2DPointSymbolsStyle',
                     name: 'trail',
