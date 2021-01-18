@@ -38,7 +38,8 @@ export class ComponentOneComponent implements OnInit {
   touristAttractionsFields: any;
   touristAttractionsPopupHtml =
     '<span>Objective Image:</span><br>\
-    <img src="{url}"></img>';
+    <img src="{url}"></img><br>\
+  <span>Description: {description}</span>';
   touristRoutesFields: any;
   touristRoutesPopupHtml =
     '<span>Length: {length} kilometers</span><br>\
@@ -168,6 +169,10 @@ export class ComponentOneComponent implements OnInit {
             name: 'url',
             type: 'string',
           },
+          {
+            name: 'description',
+            type: 'string',
+          }
         ];
 
         this.touristRoutesFields = [
@@ -457,6 +462,7 @@ export class ComponentOneComponent implements OnInit {
                           url: !touristAttraction.url
                             ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png'
                             : touristAttraction.url,
+                          description: touristAttraction.description,
                         },
                       })
                     );
