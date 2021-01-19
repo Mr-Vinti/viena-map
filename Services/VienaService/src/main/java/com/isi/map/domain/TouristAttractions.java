@@ -36,6 +36,9 @@ public class TouristAttractions {
 	@Column(name = "Url")
 	private String url;
 	
+	@Column(name = "Descriere")
+	private String description;
+	
 	@OneToOne
 	@JoinColumn(name = "ID_detaliu", referencedColumnName = "ID")
 	private ActivityDetails activityDetails;
@@ -45,6 +48,7 @@ public class TouristAttractions {
 				.id(entity.getId())
 				.name(entity.getName())
 				.url(entity.getUrl())
+				.description(entity.getDescription())
 				.activityDetails(ActivityDetails.toDto(entity.getActivityDetails()))
 				.build();
 	}

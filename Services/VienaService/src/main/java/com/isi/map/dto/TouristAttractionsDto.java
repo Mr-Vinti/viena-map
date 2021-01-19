@@ -15,5 +15,6 @@ public class TouristAttractionsDto {
 	Integer id;
 	String name;
 	String url;
+	String description;
 	ActivityDetailsDto activityDetails;
 }

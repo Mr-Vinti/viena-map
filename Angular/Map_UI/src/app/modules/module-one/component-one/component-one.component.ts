@@ -481,7 +481,7 @@ export class ComponentOneComponent implements OnInit {
                           mediaInfos: [
                             {
                               title: '',
-                              caption: '',
+                              caption: '{description}',
                               value: {
                                 sourceURL: '{url}',
                               },
