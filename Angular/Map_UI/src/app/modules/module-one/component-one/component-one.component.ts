@@ -309,6 +309,19 @@ export class ComponentOneComponent implements OnInit {
                           symbol: new SimpleLineSymbol({
                             color: [0, 150, 0],
                           }),
+                          popupTemplate: {
+                            title: 'Hiking Trail: ' + hikingTrail.name,
+                            content:
+                              '<span>Length: ' +
+                              hikingTrail.length +
+                              ' kilometers</span><br>\
+                            <span>Duration: ' +
+                              hikingTrail.duration +
+                              ' minutes</span><br>\
+                            <span>Difficulty grade: ' +
+                              hikingTrail.dificulty +
+                              '</span>',
+                          },
                         })
                       );
                     });
@@ -586,6 +599,7 @@ export class ComponentOneComponent implements OnInit {
               ]) => {
                 this.removeLayerFromMap('touristRoutes').finally(() => {
                   this.removeLayerFromMap('touristRoutesLines').finally(() => {
+                    let i = 0;
                     this.touristRoutes.forEach((touristRoute) => {
                       touristRoutesGraphics.push(
                         new Graphic({
@@ -619,10 +633,22 @@ export class ComponentOneComponent implements OnInit {
                             paths: path,
                           }),
                           symbol: new SimpleLineSymbol({
-                            color: [255, 0, 0],
+                            color: [255, 50 * i, 50 * i],
+                            width: 2,
                           }),
+                          popupTemplate: {
+                            title: 'Touristic route: ' + touristRoute.name,
+                            content:
+                              '<span>Length: ' +
+                              touristRoute.length +
+                              ' kilometers</span><br>\
+                                      <span>Number of Touristic Objectives: ' +
+                              touristRoute.objectivesNumber +
+                              '</span>',
+                          },
                         })
                       );
+                      i++;
                     });
 
                     const layer = new FeatureLayer({
