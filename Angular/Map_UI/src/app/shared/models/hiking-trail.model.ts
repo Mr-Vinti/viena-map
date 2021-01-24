@@ -1,4 +1,5 @@
 import { ActivityDetails } from './activity-details.model';
+import { PolylinePoint } from './polyline-point.model';
 
 export interface HikingTrail {
   id: number;
@@ -7,4 +8,5 @@ export interface HikingTrail {
   duration: number;
   dificulty: number;
   activityDetails: ActivityDetails;
+  points: PolylinePoint[];
 }

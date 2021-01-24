@@ -1,5 +1,7 @@
 package com.isi.map.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +20,5 @@ public class HikingTrailsDto {
 	Integer duration;
 	Integer dificulty;
 	ActivityDetailsDto activityDetails;
+	List<PolylinePointDto> points;
 }

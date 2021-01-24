@@ -7,7 +7,7 @@ import { TouristRoute } from '../../../shared/models/tourist-route.model';
 import { HttpService } from '../../../core/http/http.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { loadModules } from 'esri-loader';
-import { Extent } from 'esri/geometry';
+import { Extent, Polyline } from 'esri/geometry';
 import { identifierModuleUrl } from '@angular/compiler';
 import { PictureMarkerSymbol, WebStyleSymbol } from 'esri/symbols';
 
@@ -172,7 +172,7 @@ export class ComponentOneComponent implements OnInit {
           {
             name: 'description',
             type: 'string',
-          }
+          },
         ];
 
         this.touristRoutesFields = [
@@ -223,12 +223,8 @@ export class ComponentOneComponent implements OnInit {
   }
 
   async search() {
-    loadModules([
-      'esri/views/MapView',
-    ]).then(
-      ([MapView]: [
-        __esri.MapViewConstructor
-      ]) => {
+    loadModules(['esri/views/MapView']).then(
+      ([MapView]: [__esri.MapViewConstructor]) => {
         this.mapView.popup.close();
       }
     );
@@ -242,83 +238,118 @@ export class ComponentOneComponent implements OnInit {
 
           if (this.hikingTrails.length) {
             const hikingTrailGraphics = [];
+            const hikingTrailLines = [];
 
             loadModules([
               'esri/Map',
               'esri/layers/FeatureLayer',
               'esri/geometry/Point',
+              'esri/geometry/Polyline',
               'esri/Graphic',
               'esri/renderers/SimpleRenderer',
               'esri/symbols/WebStyleSymbol',
+              'esri/symbols/SimpleLineSymbol',
+              'esri/layers/GraphicsLayer',
             ]).then(
               ([
                 Map,
                 FeatureLayer,
                 Point,
+                Polyline,
                 Graphic,
                 SimpleRenderer,
                 WebStyleSymbol,
+                SimpleLineSymbol,
+                GraphicsLayer,
               ]: [
                 __esri.MapConstructor,
                 __esri.FeatureLayerConstructor,
                 __esri.PointConstructor,
+                __esri.PolylineConstructor,
                 __esri.GraphicConstructor,
                 __esri.SimpleRendererConstructor,
-                __esri.WebStyleSymbolConstructor
+                __esri.WebStyleSymbolConstructor,
+                __esri.SimpleLineSymbolConstructor,
+                __esri.GraphicsLayerConstructor
               ]) => {
                 this.removeLayerFromMap('hikingTrails').finally(() => {
-                  this.hikingTrails.forEach((hikingTrail) => {
-                    hikingTrailGraphics.push(
-                      new Graphic({
-                        geometry: new Point({
-                          latitude:
-                            (hikingTrail.activityDetails.yMin +
-                              hikingTrail.activityDetails.yMax) /
-                            2,
-                          longitude:
-                            (hikingTrail.activityDetails.xMin +
-                              hikingTrail.activityDetails.xMax) /
-                            2,
+                  this.removeLayerFromMap('hikingTrailsLines').finally(() => {
+                    this.hikingTrails.forEach((hikingTrail) => {
+                      hikingTrailGraphics.push(
+                        new Graphic({
+                          geometry: new Point({
+                            latitude:
+                              (hikingTrail.activityDetails.yMin +
+                                hikingTrail.activityDetails.yMax) /
+                              2,
+                            longitude:
+                              (hikingTrail.activityDetails.xMin +
+                                hikingTrail.activityDetails.xMax) /
+                              2,
+                          }),
+                          attributes: {
+                            OBJECTID: hikingTrail.id,
+                            name: hikingTrail.name,
+                            length: hikingTrail.length,
+                            duration: hikingTrail.duration,
+                            dificulty: hikingTrail.dificulty,
+                          },
+                        })
+                      );
+                      const path = [];
+                      hikingTrail.points.forEach((point) => {
+                        path.push([point.x, point.y]);
+                      });
+
+                      hikingTrailLines.push(
+                        new Graphic({
+                          geometry: new Polyline({
+                            paths: path,
+                          }),
+                          symbol: new SimpleLineSymbol({
+                            color: [0, 150, 0],
+                          }),
+                        })
+                      );
+                    });
+
+                    const layer = new FeatureLayer({
+                      id: 'hikingTrails',
+                      source: hikingTrailGraphics,
+                      objectIdField: 'OBJECTID',
+                      fields: this.hikingTrailFields,
+                      popupTemplate: {
+                        title: 'Hiking Trail: {name}',
+                        content: this.hikingTrailPopupHtml,
+                      },
+                      renderer: new SimpleRenderer({
+                        symbol: new WebStyleSymbol({
+                          styleName: 'Esri2DPointSymbolsStyle',
+                          name: 'trail',
+                          // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                         }),
-                        attributes: {
-                          OBJECTID: hikingTrail.id,
-                          name: hikingTrail.name,
-                          length: hikingTrail.length,
-                          duration: hikingTrail.duration,
-                          dificulty: hikingTrail.dificulty,
-                        },
-                      })
-                    );
-                  });
-
-                  const layer = new FeatureLayer({
-                    id: 'hikingTrails',
-                    source: hikingTrailGraphics,
-                    objectIdField: 'OBJECTID',
-                    fields: this.hikingTrailFields,
-                    popupTemplate: {
-                      title: 'Hiking Trail: {name}',
-                      content: this.hikingTrailPopupHtml,
-                    },
-                    renderer: new SimpleRenderer({
-                      symbol: new WebStyleSymbol({
-                        styleName: 'Esri2DPointSymbolsStyle',
-                        name: 'trail',
-                        // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                       }),
-                    }),
-                  });
+                    });
 
-                  this.map.add(layer);
+                    const graphicsLayer = new GraphicsLayer({
+                      id: 'hikingTrailLines',
+                      graphics: hikingTrailLines,
+                    });
+
+                    this.map.add(layer);
+                    this.map.add(graphicsLayer);
+                  });
                 });
               }
             );
           } else {
             this.removeLayerFromMap('hikingTrails');
+            this.removeLayerFromMap('hikingTrailsLines');
           }
         });
     } else {
       this.removeLayerFromMap('hikingTrails');
+      this.removeLayerFromMap('hikingTrailsLines');
     }
 
     if (this.searchForm.controls.hasParks.value) {
@@ -519,82 +550,118 @@ export class ComponentOneComponent implements OnInit {
           console.log(this.touristRoutes);
           if (this.touristRoutes.length) {
             const touristRoutesGraphics = [];
+            const touristRoutesLines = [];
 
             loadModules([
               'esri/Map',
               'esri/layers/FeatureLayer',
               'esri/geometry/Point',
+              'esri/geometry/Polyline',
               'esri/Graphic',
               'esri/renderers/SimpleRenderer',
               'esri/symbols/WebStyleSymbol',
+              'esri/symbols/SimpleLineSymbol',
+              'esri/layers/GraphicsLayer',
             ]).then(
               ([
                 Map,
                 FeatureLayer,
                 Point,
+                Polyline,
                 Graphic,
                 SimpleRenderer,
                 WebStyleSymbol,
+                SimpleLineSymbol,
+                GraphicsLayer,
               ]: [
                 __esri.MapConstructor,
                 __esri.FeatureLayerConstructor,
                 __esri.PointConstructor,
+                __esri.PolylineConstructor,
                 __esri.GraphicConstructor,
                 __esri.SimpleRendererConstructor,
-                __esri.WebStyleSymbolConstructor
+                __esri.WebStyleSymbolConstructor,
+                __esri.SimpleLineSymbolConstructor,
+                __esri.GraphicsLayerConstructor
               ]) => {
                 this.removeLayerFromMap('touristRoutes').finally(() => {
-                  this.touristRoutes.forEach((touristRoute) => {
-                    touristRoutesGraphics.push(
-                      new Graphic({
-                        geometry: new Point({
-                          latitude:
-                            (touristRoute.activityDetails.yMin +
-                              touristRoute.activityDetails.yMax) /
-                            2,
-                          longitude:
-                            (touristRoute.activityDetails.xMin +
-                              touristRoute.activityDetails.xMax) /
-                            2,
+                  this.removeLayerFromMap('touristRoutesLines').finally(() => {
+                    this.touristRoutes.forEach((touristRoute) => {
+                      touristRoutesGraphics.push(
+                        new Graphic({
+                          geometry: new Point({
+                            latitude:
+                              (touristRoute.activityDetails.yMin +
+                                touristRoute.activityDetails.yMax) /
+                              2,
+                            longitude:
+                              (touristRoute.activityDetails.xMin +
+                                touristRoute.activityDetails.xMax) /
+                              2,
+                          }),
+                          attributes: {
+                            OBJECTID: touristRoute.id,
+                            name: touristRoute.name,
+                            length: touristRoute.length,
+                            objectivesNumber: touristRoute.objectivesNumber,
+                          },
+                        })
+                      );
+
+                      const path = [];
+                      touristRoute.points.forEach((point) => {
+                        path.push([point.x, point.y]);
+                      });
+
+                      touristRoutesLines.push(
+                        new Graphic({
+                          geometry: new Polyline({
+                            paths: path,
+                          }),
+                          symbol: new SimpleLineSymbol({
+                            color: [255, 0, 0],
+                          }),
+                        })
+                      );
+                    });
+
+                    const layer = new FeatureLayer({
+                      id: 'touristRoutes',
+                      source: touristRoutesGraphics,
+                      objectIdField: 'OBJECTID',
+                      fields: this.touristRoutesFields,
+                      popupTemplate: {
+                        title: 'Touristic Route : {name}',
+                        content: this.touristRoutesPopupHtml,
+                      },
+                      renderer: new SimpleRenderer({
+                        symbol: new WebStyleSymbol({
+                          styleName: 'Esri2DPointSymbolsStyle',
+                          name: 'flag',
+                          // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                         }),
-                        attributes: {
-                          OBJECTID: touristRoute.id,
-                          name: touristRoute.name,
-                          length: touristRoute.length,
-                          objectivesNumber: touristRoute.objectivesNumber,
-                        },
-                      })
-                    );
-                  });
-
-                  const layer = new FeatureLayer({
-                    id: 'touristRoutes',
-                    source: touristRoutesGraphics,
-                    objectIdField: 'OBJECTID',
-                    fields: this.touristRoutesFields,
-                    popupTemplate: {
-                      title: 'Touristic Route : {name}',
-                      content: this.touristRoutesPopupHtml,
-                    },
-                    renderer: new SimpleRenderer({
-                      symbol: new WebStyleSymbol({
-                        styleName: 'Esri2DPointSymbolsStyle',
-                        name: 'flag',
-                        // Get symbol from: https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols-2d/index.html
                       }),
-                    }),
-                  });
+                    });
 
-                  this.map.add(layer);
+                    const graphicsLayer = new GraphicsLayer({
+                      id: 'touristRoutesLines',
+                      graphics: touristRoutesLines,
+                    });
+
+                    this.map.add(layer);
+                    this.map.add(graphicsLayer);
+                  });
                 });
               }
             );
           } else {
             this.removeLayerFromMap('touristRoutes');
+            this.removeLayerFromMap('touristRoutesLines');
           }
         });
     } else {
       this.removeLayerFromMap('touristRoutes');
+      this.removeLayerFromMap('touristRoutesLines');
     }
   }
 }

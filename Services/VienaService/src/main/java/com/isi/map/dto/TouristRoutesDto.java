@@ -1,5 +1,7 @@
 package com.isi.map.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +19,5 @@ public class TouristRoutesDto {
 	Integer length;
 	Integer objectivesNumber;
 	ActivityDetailsDto activityDetails;
+	List<PolylinePointDto> points;
 }

@@ -24,6 +24,7 @@ import lombok.extern.log4j.Log4j2;
 public class HikingTrailsService {
 
 	HikingTrailsRepository hikingTrailsRepository;
+	PolylinePointService polylinePointService;
 
 	public List<HikingTrailsDto> getHikingTrails(Predicate predicate, String name) {
 		log.info("Retrieving hiking trails for predicate: {}"
@@ -35,6 +36,10 @@ public class HikingTrailsService {
 		List<HikingTrails> hikingTrails = IterableUtils.toList(
 				hikingTrailsRepository.findAll(customPredicate != null ? customPredicate.and(predicate) : predicate));
 
-		return hikingTrails.stream().map(HikingTrails::toDto).collect(Collectors.toList());
+		return hikingTrails.stream().map((hikingTrail) -> {
+			HikingTrailsDto hikingTrailsDto = HikingTrails.toDto(hikingTrail);
+			hikingTrailsDto.setPoints(polylinePointService.getPoints(hikingTrailsDto.getId(), "Drumetie"));
+			return hikingTrailsDto;
+		}).collect(Collectors.toList());
 	}
 }
