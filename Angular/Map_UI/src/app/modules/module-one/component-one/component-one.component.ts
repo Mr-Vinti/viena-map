@@ -273,7 +273,7 @@ export class ComponentOneComponent implements OnInit {
                 __esri.GraphicsLayerConstructor
               ]) => {
                 this.removeLayerFromMap('hikingTrails').finally(() => {
-                  this.removeLayerFromMap('hikingTrailsLines').finally(() => {
+                  this.removeLayerFromMap('hikingTrailLines').finally(() => {
                     this.hikingTrails.forEach((hikingTrail) => {
                       hikingTrailGraphics.push(
                         new Graphic({
@@ -344,12 +344,12 @@ export class ComponentOneComponent implements OnInit {
             );
           } else {
             this.removeLayerFromMap('hikingTrails');
-            this.removeLayerFromMap('hikingTrailsLines');
+            this.removeLayerFromMap('hikingTrailLines');
           }
         });
     } else {
       this.removeLayerFromMap('hikingTrails');
-      this.removeLayerFromMap('hikingTrailsLines');
+      this.removeLayerFromMap('hikingTrailLines');
     }
 
     if (this.searchForm.controls.hasParks.value) {
