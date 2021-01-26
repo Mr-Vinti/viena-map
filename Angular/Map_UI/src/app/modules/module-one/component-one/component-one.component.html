@@ -5,10 +5,10 @@
         <mat-label>Search</mat-label>
         <input matInput formControlName="search" />
       </mat-form-field>
-      <mat-checkbox fxFlex="100%" formControlName="hasParks">Parks</mat-checkbox>
-      <mat-checkbox fxFlex="100%" formControlName="hasHikingTrails">Hiking Trails</mat-checkbox>
-      <mat-checkbox fxFlex="100%" formControlName="hasTouristAttractions">Tourist Atractions</mat-checkbox>
-      <mat-checkbox fxFlex="100%" formControlName="hasTouristRoutes">Tourist Routes</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasParks"><img src="assets/img/park.png" class="arcgis-img"> Parks</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasHikingTrails"><img src="assets/img/trail.png" class="arcgis-img"> Hiking Trails</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasTouristAttractions"><img src="assets/img/landmark.png" class="arcgis-img"> Tourist Atractions</mat-checkbox>
+      <mat-checkbox fxFlex="100%" formControlName="hasTouristRoutes"><img src="assets/img/flag.png" class="arcgis-img"> Tourist Routes</mat-checkbox>
       <button mat-raised-button color="primary" fxFlex="100%" (click)="search()">Search</button>
     </form>
   </mat-drawer>

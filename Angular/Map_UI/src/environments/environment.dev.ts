@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   baseHref: '/viena/',
-  apiUri: 'https://vienamapservice-vienaservice.azuremicroservices.io/viena-service/'
+  apiUri: 'https://vienaservice-vienamapservice.azuremicroservices.io/viena-service/'
 };
